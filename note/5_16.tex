@@ -241,7 +241,98 @@ $$
 $$
 $H \in \mathbb{R}^{n+1 \times n+1}$ is the Hessian Matrix, $H_{ij} = \frac{\partial^2l}{\partial\theta_i\partial\theta_j}$\\
 Note: If the dataset is large, the size of $H$ will be too large to compute.
-\indent
 
 
+\section{Lecture 4}
+\subsection{Perceptron}
+Binary step function: 
+\begin{align}
+  g(z)=
+      \begin{cases}
+      1 & z \geq 0 \\
+      0 & z < 0 \\
+      \end{cases}
+\end{align}
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.5\textwidth]{Fig3.png}}
+   \caption{The graph of binary step.}
+   \label{fig:example}
+\end{figure}
+Batch Gradient Ascent: $\theta_j := \theta_j + \alpha(y^i-h_\theta(x^i))x_j^i$
+
+\subsection{Exponential Family}
+\subsubsection{Defination and Examples of Exponential Family}
+Probability Density Function (PDF): $p(y;\eta) = b(y){\rm exp}[\eta^TT(y)-a(\eta)]$\\
+$y$: data\\
+$\eta$: natural parameter\\
+$T(y)$: sufficient statistic\\
+$b(y)$: base measure\\
+$a(\eta)$: log partition\\
+
+\noindent
+Example 1:
+Bernoulli (Binary Data): $p(y;\phi) = \phi^y(1-\phi)^{(1-y)}$\\
+$\phi$ = probability of the event\\
+$p(y;\phi) = {\rm exp}[y\log{(\frac{\phi}{1-\phi})} + \log{(1-\phi)}]$\\
+$b(y) = 1$\\
+$T(y) = y$\\
+$\eta = \log{\frac{\phi}{1-\phi}}$ $\Rightarrow$ $\phi = \frac{1}{1 + e^{-\eta}}$ \\
+$a(\eta) = -\log{(1-\phi)} = -\log{(1-\frac{1}{1 + e^{-\eta}})}$ = $\log{(1 + e^\eta)}$\\
+
+\noindent
+Example 2:
+Gaussian (assume variance = 1): $p(y;\mu) = \frac{1}{\sqrt{2\pi}}e^{(-\frac{(y-\mu)^2}{2})}$
+= $\frac{1}{\sqrt{2\pi}}e^{-\frac{y^2}{2}}{\rm exp}(\mu y-\frac{\mu^2}{2})$\\
+$b(y) = \frac{1}{\sqrt{2\pi}}e^{-\frac{y^2}{2}}$\\
+$T(y) = y$\\
+$\eta = \mu$\\
+$a(\eta) = \frac{\mu^2}{2} = \frac{\eta^2}{2}$\\
+
+\subsubsection{Properties of Exponential Family}
+\begin{itemize}[leftmargin=*, nosep]
+  \item MLE w.r.t $\eta$ is concave, NLL is convex
+  \item $E[y;\eta] = \frac{\partial}{\partial\eta}a(\eta)$
+  \item $Var[y;\eta] = \frac{\partial^2}{\partial\eta^2}a(\eta)$
+\end{itemize}
+Real - Gaussian; Binary - Bernoulli; Count - Poisson; $\mathbb{R}^{+}$ - Gamma, Exponential; Distribution - Beta, Dirichlet (Bayesian).
+\subsection{Generalized Linear Model (GLM)}
+\subsubsection{GLM Assumptions}
+Assumptions/Design Choices\\
+(1) $y|x;\theta$ $\sim$ Exponential Family ($\eta$) \\
+(2) $\eta = \theta^Tx$, $\theta \in \mathbb{R}^n$ and $x \in \mathbb{R}^n$ \\
+(3) Test Time: output $h_\theta(x) = E[y|x;\theta]$
+\subsubsection{GLM Pipeline}
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.7\textwidth]{Fig4.png}}
+   \caption{The pipeline for GLM.}
+   \label{fig:example}
+\end{figure}
+\subsubsection{GLM Training}
+Learning Update Rule:
+  $\theta_j := \theta_j + \alpha(y^i-h_\theta(x^i))x_j^i$\\
+
+\noindent
+Terminology:\\
+$\eta$ - natural parameter\\
+$g(\eta) = \mu = E(y;\eta)$ - canonical response function\\
+$\eta = g^{-1}(\mu)$ - canonical link function\\
+
+\noindent
+Three parameterizations:\\
+Model Param: $\theta$ (\textbf{Learn Parameters})\\
+Natural Param: $\eta$ (Design Choice: $\theta^Tx$)\\
+Canonical Param: $\phi$ - Bernoulli, $\mu$ $\sigma$ - Gaussian, $\lambda$ - Poisson (Canonical Response: $g(\cdot)$)\\
+
+\subsubsection{Review Logistic Regression}
+$h_\theta(x) = E[y|x;\theta] = \phi$ (the mean of the Bernoulli distribution)\\
+$h_\theta(x) = \phi = \frac{1}{1+e^{-\eta}} = \frac{1}{1+e^{-\theta^Tx}}$
+
+\subsection{Softmax Regression}
+Task: multi-class Classification\\
+$k$ - number of classes, $x^i \in \mathbb{R}^n$, Label $y^i \in \{0,1\}^k$ (one-hot vector)\\
+Each class has its own parameters: $\theta_{class} \in \mathbb{R}^n$\\
+$p(y=i|x;\theta) = \frac{e^{\theta_i^Tx}}{\sum_{j=1}^ke^{\theta_j^Tx}}$\\
+$l(\theta) = \sum\limits_{i=1}^mlog\prod\limits_{l=1}^k(\frac{e^{\theta_l^Tx^i}}{\sum_{j=1}^ke^{\theta_j^Tx^i}})^{\{y^i = l\}}$
 \end{document}

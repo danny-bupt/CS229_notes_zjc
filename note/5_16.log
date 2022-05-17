@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.27)  17 MAY 2022 18:58
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.27)  18 MAY 2022 02:28
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -500,6 +500,12 @@ File: l3backend-xetex.def 2021-03-18 L3 backend support: XeTeX
 
 LaTeX Warning: Label `fig:example' multiply defined.
 
+
+LaTeX Warning: Label `fig:example' multiply defined.
+
+
+LaTeX Warning: Label `fig:example' multiply defined.
+
 )
 \openout1 = `5_16.aux'.
 
@@ -640,20 +646,55 @@ Underfull \hbox (badness 10000) in paragraph at lines 225--227
 
  []
 
-[4] (./5_16.aux)
+File: Fig3.png Graphic file (type bmp)
+<Fig3.png>
+[4]
+Underfull \hbox (badness 10000) in paragraph at lines 266--272
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 273--282
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 283--291
+
+ []
+
+[5]
+File: Fig4.png Graphic file (type bmp)
+<Fig4.png>
+
+Underfull \hbox (badness 10000) in paragraph at lines 313--315
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 316--321
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 322--327
+
+ []
+
+[6] [7] (./5_16.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `5_16.out' has not changed.
-(rerunfilecheck)             Checksum: 1C009CA85024E44E7E1A21A357D7DAC4;1789.
+(rerunfilecheck)             Checksum: E6FFE667992D628F8E7BFA1B9282DDAB;3671.
  ) 
 Here is how much of TeX's memory you used:
- 21236 strings out of 476919
- 381992 string characters out of 5821840
- 700053 words of memory out of 5000000
- 40839 multiletter control sequences out of 15000+600000
+ 21251 strings out of 476919
+ 382155 string characters out of 5821840
+ 702043 words of memory out of 5000000
+ 40852 multiletter control sequences out of 15000+600000
  412971 words of font info for 73 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 87i,9n,89p,432b,447s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 87i,14n,89p,432b,447s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on 5_16.pdf (4 pages).
+Output written on 5_16.pdf (7 pages).
