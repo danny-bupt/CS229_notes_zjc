@@ -19,6 +19,7 @@
 \usepackage{amsfonts,amssymb}
 \usepackage[shortlabels]{enumitem}
 \usepackage{setspace}
+\usepackage{tikz}
 
 
 
@@ -170,11 +171,77 @@ Difference between Likelihood ($L$) and Probability ($P$): $L$ variess parameter
 Assume the datapoints are IID,\\
 The "likelihood" of $\theta$: $L(\theta) = p(\boldsymbol{y}|\boldsymbol{x};\theta)$
 = $\prod\limits_{i=1}^m p(y^i|x^i;\theta)$\\
-$l(\theta) = log\prod\limits_{i=1}^m\frac{1}{\sqrt{2\pi}\sigma}e^{(...)}$
-= $\sum\limits_{i=1}^m[log\frac{1}{\sqrt{2\pi}\sigma} + loge^{(...)}]$\\
-= $mlog\frac{1}{\sqrt{2\pi}\sigma} - \sum\limits_{i=1}^m\frac{(y^i-\theta^Tx^i)^2}{2\sigma^2}$\\
+$l(\theta) = \log{\prod\limits_{i=1}^m\frac{1}{\sqrt{2\pi}\sigma}e^{(...)}}$
+= $\sum\limits_{i=1}^m[\log{\frac{1}{\sqrt{2\pi}\sigma}} + \log{e^{(...)}}]$\\
+= $m\log{\frac{1}{\sqrt{2\pi}\sigma}} - \sum\limits_{i=1}^m\frac{(y^i-\theta^Tx^i)^2}{2\sigma^2}$\\
 
 \noindent
 MLE: maximum likelihood estimation. Choose $\theta$ to maximize $L(\theta)$\\
 i.e. choose $\theta$ to minimize $\frac{1}{2}\sum\limits_{i=1}^m(y^i-\theta^Tx^i)^2$, which is actually $J(\theta)$
+
+\subsection{Classification}
+Binary Classification: $y \in \{0,1\}$
+\subsubsection{Logistic Regression}
+We want $h_\theta(x) \in [0, 1]$, so we define\\
+$h_\theta(x) = g(\theta^Tx) = \frac{1}{1 + e^{-\theta^Tx}}$\\
+Sigmoid Function: $g(z) = \frac{1}{1 + e^{-z}}$\\
+An important thing is that: the partial derivative of the sigmoid function is a \textbf{concave} function, which means it has the global maximum.
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.5\textwidth]{Fig1.png}}
+   \caption{The graph of sigmoid function.}
+   \label{fig:example}
+\end{figure}
+\noindent
+Different from Linear Regression $h_\theta(x) = \theta^Tx$, Logistic Regression is $h_\theta(x) = \frac{1}{1 + e^{-\theta^Tx}}$.\\
+$p(y=1|x;\theta)=h_\theta(x)$, 
+$p(y=0|x;\theta)=1-h_\theta(x)$\\
+In sum, $p(y|x;\theta)=h_\theta(x)^y(1-h_\theta(x))^{1-y}$\\
+
+\noindent
+$L(\theta) = p(\boldsymbol{y}|\boldsymbol{x};\theta)$ = $\prod\limits_{i=1}^m h_\theta(x^i)^{y^i}(1-h_\theta(x^i))^{1-y^i}$\\
+$l(\theta) = \log{(L(\theta))} = \sum\limits_{i=1}^m y^i\log{h_\theta(x^i)} + (1-y^i)\log{(1-h_\theta(x^i))}$\\
+Choose $\theta$ to maximize $l(\theta)$, we use Batch gradient ascent.\\
+
+\noindent
+Batch Gradient Ascent:\\
+\indent
+$\theta_j := \theta_j + \alpha\frac{\partial}{\partial\theta_j}l(\theta)$\\
+$\theta_j := \theta_j + \alpha\sum\limits_{i=1}^m(y^i-h_\theta(x^i))x_j^i$, same as the one in linear regression. (A larger category called generalized linear model (GLM))\\
+Note: no \textbf{normal equation} for logistic regression solution.\\
+
+\subsubsection{Newton's Method}
+The basic idea: have some function $f$, we want to fit $\theta$, \textbf{s.t.} $f(\theta)=0$ $\iff$ want maximizing $l(\theta)$ $\iff$ want $l'(\theta)=0$\\
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.5\textwidth]{Fig2.png}}
+   \caption{Newton's Method.}
+   \label{fig:example}
+\end{figure}
+\noindent
+$\theta^{t+1} := \theta^{t} - \frac{f(\theta^t)}{f^{'}(\theta^t)}$, let $f(\theta) = l^{'}(\theta)$\\
+$\theta^{t+1} := \theta^{t} - \frac{l^{'}(\theta^t)}{l^{''}(\theta^t)}$\\
+
+\noindent
+"\textbf{Quadratic convergent}": $0.01$ error $\longrightarrow$ $0.0001$ error $\longrightarrow$ $0.00000001$ error.\\
+
+\noindent
+When $\theta$ is a vector: ($\theta \in \mathbb{R}^{n+1}$)\\
+\indent
+$\theta^{t+1} := \theta^t + \alpha H^{-1}\nabla_\theta l(\theta)$\\
+where 
+$$
+\nabla_\theta l(\theta) = 
+\begin{bmatrix}
+  \frac{\partial l}{\partial\theta_{00}} & \frac{\partial l}{\partial\theta_{01}} & \cdots & \frac{\partial l}{\partial\theta_{0n}} \\
+  \frac{\partial l}{\partial\theta_{10}} & \frac{\partial l}{\partial\theta_{11}} & \cdots & \frac{\partial l}{\partial\theta_{1n}} \\
+  \vdots & \vdots  & \ddots & \vdots \\
+  \frac{\partial l}{\partial\theta_{n0}} & \frac{\partial l}{\partial\theta_{n1}} & \cdots & \frac{\partial l}{\partial\theta_{nn}} \\
+\end{bmatrix}
+$$
+$H \in \mathbb{R}^{n+1 \times n+1}$ is the Hessian Matrix, $H_{ij} = \frac{\partial^2l}{\partial\theta_i\partial\theta_j}$\\
+Note: If the dataset is large, the size of $H$ will be too large to compute.
+\indent
+
+
 \end{document}
