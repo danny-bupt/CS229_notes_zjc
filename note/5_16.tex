@@ -10,7 +10,6 @@
 
 % Useful packages
 \usepackage{amsmath}
-\usepackage{graphicx}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \usepackage{algorithm}
@@ -20,9 +19,12 @@
 \usepackage[shortlabels]{enumitem}
 \usepackage{setspace}
 \usepackage{tikz}
-
-
-
+\usepackage{bbm}
+\usepackage{multicol}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{extarrows}
 
 \title{CS229: Machine Learning}
 \author{Junchuan Zhao}
@@ -158,7 +160,7 @@ where $w^i$ is a "weight function".
 common choice for $w^i$ is $w^i = e^{(-\frac{(x^i-x)^2}{2\tau^2})}$\\
 If $\lvert x^i-x \rvert$ is small, then $w^i \approx 1$.\\
 If $\lvert x^i-x \rvert$ is large, then $w^i \approx 0$.\\
-$\tau$: bandwidth, control a larger or narrower window.\\
+$\tau$: bandwidth, control a larger or narrower window.
 
 \subsection{Why Square Error?}
 
@@ -287,7 +289,7 @@ Gaussian (assume variance = 1): $p(y;\mu) = \frac{1}{\sqrt{2\pi}}e^{(-\frac{(y-\
 $b(y) = \frac{1}{\sqrt{2\pi}}e^{-\frac{y^2}{2}}$\\
 $T(y) = y$\\
 $\eta = \mu$\\
-$a(\eta) = \frac{\mu^2}{2} = \frac{\eta^2}{2}$\\
+$a(\eta) = \frac{\mu^2}{2} = \frac{\eta^2}{2}$
 
 \subsubsection{Properties of Exponential Family}
 \begin{itemize}[leftmargin=*, nosep]
@@ -296,6 +298,7 @@ $a(\eta) = \frac{\mu^2}{2} = \frac{\eta^2}{2}$\\
   \item $Var[y;\eta] = \frac{\partial^2}{\partial\eta^2}a(\eta)$
 \end{itemize}
 Real - Gaussian; Binary - Bernoulli; Count - Poisson; $\mathbb{R}^{+}$ - Gamma, Exponential; Distribution - Beta, Dirichlet (Bayesian).
+
 \subsection{Generalized Linear Model (GLM)}
 \subsubsection{GLM Assumptions}
 Assumptions/Design Choices\\
@@ -323,7 +326,7 @@ $\eta = g^{-1}(\mu)$ - canonical link function\\
 Three parameterizations:\\
 Model Param: $\theta$ (\textbf{Learn Parameters})\\
 Natural Param: $\eta$ (Design Choice: $\theta^Tx$)\\
-Canonical Param: $\phi$ - Bernoulli, $\mu$ $\sigma$ - Gaussian, $\lambda$ - Poisson (Canonical Response: $g(\cdot)$)\\
+Canonical Param: $\phi$ - Bernoulli, $\mu$ $\sigma$ - Gaussian, $\lambda$ - Poisson (Canonical Response: $g(\cdot)$)
 
 \subsubsection{Review Logistic Regression}
 $h_\theta(x) = E[y|x;\theta] = \phi$ (the mean of the Bernoulli distribution)\\
@@ -335,4 +338,108 @@ $k$ - number of classes, $x^i \in \mathbb{R}^n$, Label $y^i \in \{0,1\}^k$ (one-
 Each class has its own parameters: $\theta_{class} \in \mathbb{R}^n$\\
 $p(y=i|x;\theta) = \frac{e^{\theta_i^Tx}}{\sum_{j=1}^ke^{\theta_j^Tx}}$\\
 $l(\theta) = \sum\limits_{i=1}^mlog\prod\limits_{l=1}^k(\frac{e^{\theta_l^Tx^i}}{\sum_{j=1}^ke^{\theta_j^Tx^i}})^{\{y^i = l\}}$
+
+
+\section{Lecture 5}
+\subsection{Discriminative v.s. Generative Learning Algorithms}
+Discriminative: Learn $p(y|x)$ which is the mapping from x to y.\\
+
+\noindent
+Generative: Learn $p(x|y)$, $p(y)$ (class prior)\\
+According to Bayes rule: $p(y|x) = \frac{p(x|y)p(y)}{p(x)}$, 
+$p(x) = \sum\limits_{i=0}^kp(x|y=i)p(y=i)$
+
+\subsection{Gaussian Discriminant Analysis (GDA)}
+\subsubsection{Assumptions and Fundamental Knowledge}
+Suppose $x \in \mathbb{R}^n$ (convention: drop $x_0=1$)\\
+Assume $p(x|y)$ is Gaussian\\
+
+Basic Knowledge for Multivariate Gaussian:\\
+\indent
+$z \sim N(\boldsymbol{\mu},\Sigma)$, ($z \in \mathbb{R}^n$)\\
+\indent
+$p(z) = \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}exp(-\frac{1}{2}(x-\boldsymbol{\mu})^T\Sigma^{-1}(x-\boldsymbol{\mu}))$
+\indent
+$E[z] = \boldsymbol{\mu}$\\
+\indent
+$Cov(z) = E[(z-\mu)(z-\mu)^T] = E_{zz^T}-E[z]{E[z]}^T$
+
+\subsubsection{GDA model}
+Parameters: $\boldsymbol{\mu_0}, \boldsymbol{\mu_1}, \Sigma$ (use same covariance matrix)\\
+$p(x|y=0) = \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}exp(-\frac{1}{2}(x-\boldsymbol{\mu_0})^T\Sigma^{-1}(x-\boldsymbol{\mu_0}))$\\
+$p(x|y=1) = \frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}exp(-\frac{1}{2}(x-\boldsymbol{\mu_1})^T\Sigma^{-1}(x-\boldsymbol{\mu_1}))$\\
+$p(y) = \phi^y(1-\phi)^y$ ($p(y=1)=\phi$)\\
+
+\noindent
+Training set: $\{(x^i, y^i)\}_{i=1}^m$\\
+Joint Likelihood: $L(\phi,\boldsymbol{\mu_0}, \boldsymbol{\mu_1}, \Sigma) = \prod\limits_{i=1}^m p(x^i, y^i; \phi,\boldsymbol{\mu_0}, \boldsymbol{\mu_1}) 
+= \prod\limits_{i=1}^m p(x^i|y^i)p(y^i)$\\
+\indent\indent
+Discriminative Learning (\textbf{Conditional Likelihood}): $\prod\limits_{i=1}^m p(y^i|x^i;\theta)$\\
+
+\noindent
+Maximize Likelihood Estimation (MLE):\\
+$\max\limits_{\phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma}l(\phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma)$\\
+Results of MLE:\\
+$\phi = \frac{\sum\limits_{i=1}^m y^i}{m} = \frac{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=1\}}{m}$ ($\mathbbm{1}: \mathbbm{1}\{{\rm true}\} = 1, \mathbbm{1}\{{\rm false}\} = 0$)\\
+$\boldsymbol{\mu_0} = \frac{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=0\}x^i}{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=0\}} = \frac{{\rm sum\ of\ feature\ vectors\ for\ samples\ with\ y=0}}{{\rm number\ of\ samples\ with\ y=0}}$\\
+$\boldsymbol{\mu_0} = \frac{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=1\}x^i}{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=1\}}$\\
+$\Sigma = \frac{1}{m} \sum\limits_{i=1}^m(x^i-\mu_{y^i})(x^i-\mu_{y^i})^T$\\
+
+\noindent
+Prediction:\\
+$\mathop{\arg\max}\limits_{y}p(y|x) = \mathop{\arg\max}\limits_{y}\frac{p(x|y)p(y)}{p(x)}$ ($p(x)$ is constant)\\
+= $\mathop{\arg\max}p(x|y)p(y)$
+
+\subsubsection{Compare GDA to Logistic Regression}
+For fix parameters: $\phi,\boldsymbol{\mu_0}, \boldsymbol{\mu_1}, \Sigma$, 
+plot $p(y|x; \phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma)$ as a function of $x$.\\
+By Bayes Rule: $p(y=1|x; \phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma) = \frac{p(x|y=1;\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma)p(y=1;\phi)}{p(x; \phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma)}$.\\
+In the end, $p(y=1|x;\phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma) = \frac{1}{1+exp(-\theta^Tx)}$, where $\theta$ is a function of $\phi,\boldsymbol{\mu_0},\boldsymbol{\mu_1},\Sigma$.\\
+
+\noindent
+The assumption of GDA $\Rightarrow$ $p(y=i|x) = \frac{1}{1 + e^{-\theta^Tx}}$\\
+However, $p(y=i|x) = \frac{1}{1 + e^{-\theta^Tx}}$  $\bcancel{\Rightarrow}$ GDA assumptions.
+\begin{table}[h]
+  \begin{center}
+  \begin{tabular}{cc}
+    \toprule
+    GDA & Logistic Regression \\
+    \midrule
+    stronger assumptions & weaker assumptions \\
+    perform better when assumptions are correct & fine with all the scenarios (distributions) \\
+    small dataset & large dataset \\
+    computationally efficient & fits the era of the big data\\
+    \bottomrule
+  \end{tabular}
+  \end{center}
+  \caption{The comparison between GDA and Logistic Regression.}
+  \label{tab:01}
+\end{table}
+\subsection{Naive Bayes}
+For a spam email classification problem:\\
+1. create a word dictionary (size $m$).\\
+If represent $x$ by a binary feature vector, $x \in \{0,1\}^n$. ($x_i = \mathbbm{1}\{{\rm word\ i\ appears\ in\ email}\}$)\\
+\indent
+This cause $2^n$  possible values of x, which is not possible for large dictionary.\\
+2. Assume \textbf{$x_i$'s are conditionally independent given y}, which means\\
+\indent
+$p(x_1, ..., x_{10000}|y) = p(x_1|y)p(x_2|x_1,y)p(x_3|x_1,x_2,y) ... p(x_{10000}|...,y)$\\
+\indent
+$\xlongequal{{\rm assume}}$ $p(x_1|y)p(x_2|y)...p(x_{10000}|y)$
+= $\prod\limits_{i=1}^np(x_i|y)$\\
+
+\noindent
+Parameters:\\
+$\phi_{j|y=1} = p(x_j=1|y=1)$\\
+$\phi_{j|y=0} = p(x_j=1|y=0)$\\
+$\phi_{y} = p(y=1)$\\
+
+\noindent
+Joint Likelihood: 
+$L(\phi_i, \phi_{j|y}) = \prod\limits_{i=1}^mp(x^i,y^i;\phi_j,\phi_{j|y})$\\
+MLE results:
+$\phi_y = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=1\}}{m}$\\
+$\phi_{j|y=1} = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{x_j^i=1,y^i=1\}}{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=1\}}$\\
+$\phi_{j|y=0} = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{x_j^i=1,y^i=0\}}{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=0\}}$\\
 \end{document}
