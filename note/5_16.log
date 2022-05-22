@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.27)  21 MAY 2022 18:17
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021) (preloaded format=xelatex 2022.3.27)  23 MAY 2022 00:11
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -604,6 +604,9 @@ LaTeX Warning: Label `fig:example' multiply defined.
 
 LaTeX Warning: Label `fig:example' multiply defined.
 
+
+LaTeX Warning: Label `fig:example' multiply defined.
+
 )
 \openout1 = `5_16.aux'.
 
@@ -812,20 +815,52 @@ Underfull \hbox (badness 10000) in paragraph at lines 438--445
 
  []
 
-[8] (./5_16.aux)
+[8]
+Underfull \hbox (badness 10000) in paragraph at lines 457--466
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 467--470
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 478--483
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 492--494
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 495--500
+
+ []
+
+File: Fig5.png Graphic file (type bmp)
+<Fig5.png>
+[9]
+Underfull \hbox (badness 10000) in paragraph at lines 509--515
+
+ []
+
+[10] (./5_16.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `5_16.out' has not changed.
-(rerunfilecheck)             Checksum: AFEA705FE6626BE1EBD80DE4EA095114;5080.
+(rerunfilecheck)             Checksum: 57C76C1775431F78BA8CE366BD464BB1;5898.
  ) 
 Here is how much of TeX's memory you used:
- 21554 strings out of 476919
- 387314 string characters out of 5821840
- 712494 words of memory out of 5000000
- 41129 multiletter control sequences out of 15000+600000
+ 21562 strings out of 476919
+ 387401 string characters out of 5821840
+ 713379 words of memory out of 5000000
+ 41136 multiletter control sequences out of 15000+600000
  413366 words of font info for 76 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  113i,14n,116p,448b,447s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on 5_16.pdf (8 pages).
+Output written on 5_16.pdf (10 pages).

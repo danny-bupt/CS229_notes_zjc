@@ -442,4 +442,81 @@ MLE results:
 $\phi_y = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=1\}}{m}$\\
 $\phi_{j|y=1} = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{x_j^i=1,y^i=1\}}{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=1\}}$\\
 $\phi_{j|y=0} = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{x_j^i=1,y^i=0\}}{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=0\}}$\\
+
+\noindent
+At prediction time:\\
+$p(y=1|x) = \frac{p(x|y=1)p(y=1)}{p(x|y=1)p(y=1)+p(x|y=0)p(y=0)}$\\
+Problem: when a word does not exist -- $\frac{0}{0}$
+
+\section{Lecture 6}
+\subsection{Laplace Smoothing}
+$x \in \{1, ..., k\}$, estimate $p(x=j) = \frac{\sum\limits_{j=1}^m\mathbbm{1}\{x^i=j\} {\color{red} + 1}}{m + {\color{red} + k}}$\\
+$\phi_{j|y=0} = \frac{\sum\limits_{i=1}^m\mathbbm{1}\{x_j^i=1,y^i=0\} {\color{red} + 1}}{\sum\limits_{i=1}^m\mathbbm{1}\{y^i=0\}{\color{red} + 2}}$
+
+\subsection{Multinomial Event Model}
+$x \in 
+\begin{bmatrix}
+600\\
+800\\
+1600\\
+6200\\
+\end{bmatrix}$, $x \in \mathbb{R}^n$\\
+$x_j \in \{1, 2, ..., 10000\}$, $n$ = length of email, $m$ = number of emails\\
+Parameters: $\phi_y=p(y=1), \phi_{k|y=0} = p(x_j=k|y=0), \phi_{k|y=1} = p(x_j=k|y=1)$\\
+
+\noindent
+MLE results: $\phi_{k|y=0} = \frac{\sum\limits_{i=1}^m (\mathbbm{1}\{y^i=0\}\sum\limits_{j=1}^{n_i} \mathbbm{1}\{x_j^i=k\})}{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=0\}n_i}$\\
+$\xlongequal{{\rm laplace\ smoothing}}$ = $\frac{\sum\limits_{i=1}^m (\mathbbm{1}\{y^i=0\}\sum\limits_{j=1}^{n_i} \mathbbm{1}\{x_j^i=k\}) + 1}{\sum\limits_{i=1}^m \mathbbm{1}\{y^i=0\}n_i + 10000}$\\
+
+\noindent
+The advantages for GDA and Naive Bayes: quick to train, non-iterative.
+
+\subsection{Support Vector Machines {SVM}}
+SVM helps to find non-linear boundaries for classification problems.
+
+\subsubsection{Optimal Margin Classifier}
+Functional Margin: how confidentaly and accurately to classify an example.\\
+\indent
+Logistic Regression: $h_\theta(x) = g(\theta^Tx)$, predict $1$ if $\theta^Tx \geq 0$ and $0$ otherwise.\\
+\indent
+We want if $y^i=1$, hope that $\theta^Tx^i \gg 0$ and $0$ when $\theta^Tx^i \ll 0$. -- correct or confident prediction.\\
+
+\noindent
+Notation: Labels $y \in \{-1, +1\}$, 
+\begin{align}
+  g(z)=
+      \begin{cases}
+      1 & z \geq 0 \\
+      -1 & z < 0 \\
+      \end{cases}
+\end{align}
+$h_{W,b}(x) = g(W^Tx+b)$, $W \in \mathbb{R}^n$ and $b \in \mathbb{R}$. (Compare to Logistic Regression, $b$ is $\theta_0$)\\
+
+\noindent
+Functional Margin of hyperplane defined by ($W$, $b$) w.r.t $(x^i, y^i)$:\\
+\indent $\hat{\gamma}^i = y^i(W^Tx^i+b)$, we want $\gamma^i \gg 0$\\
+Funtional Margine w.r.t training set: $\hat{\gamma} = \min\limits_{i}\hat{\gamma}^i$, $i = 1, ..., m$\\
+Rescaling the parameters: $(W,b)$ $\rightarrow$ $(\frac{W}{\Vert W \Vert}, \frac{b}{\Vert W \Vert})$\\
+
+\noindent
+Geometric Margin: the distance from the data point to the hyperplane.
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.6\textwidth]{Fig5.png}}
+   \caption{Geometric Margin.}
+   \label{fig:example}
+\end{figure}
+Geometric Margin of hyperplane ($W$,$b$) w.r.t ($x^i$,$y^i$):\\
+\indent
+$\gamma^i = \frac{y^i(W^Tx^i+b)}{\Vert W \Vert}$\\
+Geometric Margin w.r.t training set: $\gamma = \min\limits_{i}\gamma^i$\\
+The relationship between geometric and functional margin: $\gamma^i = \frac{\hat{\gamma}^i}{\Vert W \Vert}$\\
+$\hat{\gamma}$ is functional margin; $\gamma$ is geometric margin.\\
+
+\noindent
+Optimal margin classifier: choose $w$, $b$ to maximize $\gamma$:\\
+\indent
+$\max\limits_{\gamma,w,b}\gamma$ s.t. $\frac{y^i(W^Tx^i+b)}{\Vert W \Vert} \geq \gamma$, ($i = 1, ..., m$.) 
+$\Rightarrow$ $\min\limits_{w,b} {\Vert W \Vert}^2$ s.t. $y^i(W^Tx^i+b) \geq 1 $
+
 \end{document}
