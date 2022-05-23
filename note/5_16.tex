@@ -519,4 +519,125 @@ Optimal margin classifier: choose $w$, $b$ to maximize $\gamma$:\\
 $\max\limits_{\gamma,w,b}\gamma$ s.t. $\frac{y^i(W^Tx^i+b)}{\Vert W \Vert} \geq \gamma$, ($i = 1, ..., m$.) 
 $\Rightarrow$ $\min\limits_{w,b} {\Vert W \Vert}^2$ s.t. $y^i(W^Tx^i+b) \geq 1 $
 
+\section{Lecture 7}
+\subsection{Optimal Margin Classifiers}
+If $x^i \in \mathbb{R}^{100}$ (highly dimensional spaces), 
+suppose $W = \sum\limits_{i=1}^m \alpha_iy^ix^i$ (W can be represented by the linear combination of the training set)\\
+
+\noindent
+Intuition 1: Logistic Regression
+$\theta := 0$, Gradient Descent: $\theta := \theta - \alpha(h_\theta(x^i)-y^i)x^i$\\
+\indent
+Batch Gradient Descent: $\theta := \theta - \alpha\sum\limits_{i=1}^m(h_\theta(x^i)-y^i)x^i$\\
+
+\noindent
+Intuition 2: $W$ pins the decision boundary, $W$ lies in the span of the training examples\\
+
+\noindent
+$\min\limits_{W, b}\frac{1}{2} {\Vert W \Vert}^2$ s.t. $y^i(W^Tx^i+b) \geq 1$, $W = \sum\limits_{i=1}^m \alpha_iy^ix^i$\\
+$\min\limits_{W, b}\frac{1}{2} {(\sum\limits_{i=1}^m \alpha_iy^ix^i)}^T(\sum\limits_{j=1}^m \alpha_jy^jx^j)$
+= $\min\limits_{W, b}\frac{1}{2} \sum\limits_{i=1}^m \sum\limits_{j=1}^m \alpha_i\alpha_j y^iy^j \left< x^i,x^j \right>$\\
+$y^i(W^Tx^i+b) \geq 1$ $\Leftrightarrow$ $y^i(\sum\limits_j\alpha_jy^j\left< x^j,x^i \right>+b) \geq 1$
+
+\subsubsection{Dual Optimization Problem}
+$\max_\alpha W(\alpha) = \sum\limits_{i=1}^m\alpha_i - \frac{1}{2}\sum\limits_{i,j=1}^my^iy^j\alpha_i\alpha_j\left< x^i,x^j \right>$\\
+s.t. $\alpha_i \geq 0$ ($i = 1, ..., m$), $\sum\limits_{i=1}^m\alpha_iy^i=0$\\
+
+\noindent
+Make predictions:\\
+(1) solve for $\alpha_i$'s\\
+(2) to make prediction, $h_{w,b}(x) = g(w^Tx+b) = g({(\sum\limits_i \alpha_iy^ix^i)}^T x + b)$
+= $g(\sum\limits_i \alpha_iy^i \left< x^i,x \right> + b)$
+
+\subsection{Kernel}
+\subsubsection{Kernel Tricks}
+Kernel trick:\\
+(1) write algorithm in terms of $\left< x,z \right>$\\
+(2) map $x$ $\longrightarrow$ $\phi(x)$ (higher dimension)\\
+(3) find a way to compute $K(x,z)={\phi(x)}^T\phi(z)$\\
+(4) replace $\left< x,z \right>$ in algorithm with $K(x,z)$\\
+
+\noindent
+Traditional way:\\
+$x = \begin{bmatrix}
+  x_1\\
+  x_2\\
+  x_3\\
+  \end{bmatrix}$
+$\phi(x) = \begin{bmatrix}
+  x_1x_1\\
+  x_1x_2\\
+  x_1x_3\\
+  ...\\
+  x_3x_2\\
+  x_3x_3\\
+  \end{bmatrix}$
+$\phi(z) = \begin{bmatrix}
+  z_1z_1\\
+  z_1z_2\\
+  z_1z_3\\
+  ...\\
+  z_3z_2\\
+  z_3z_3\\
+  \end{bmatrix}$\\
+
+\noindent
+$n^2$ elements need $O(n^2)$ time to compute $\phi(x)$ or ${\phi(x)}^T\phi(z)$\\
+
+\noindent
+Kernel trick \# 1: ($O(n)$)\\
+$K(x,z) = {\phi(x)}^T\phi(z) = (x^Tz)^2 = (\sum\limits_{i=1}^nx_iz_i)(\sum\limits_{j=1}^nx_jz_j)$\\
+= $\sum\limits_{i=1}^n\sum\limits_{j=1}^n(x_ix_j)(z_iz_j)$\\
+
+\noindent
+Kernel trick \# 2: $K(x,z) = (x^Tz + c)^2$\\
+Kernel trick \# 3: $K(x,z) = (x^Tz + c)^d$, $\phi(x)$ has all 
+$\begin{pmatrix}
+  n+d\\
+  d\\
+  \end{pmatrix}$ $\approx$ $(n+d)^d$ features of monomials up to order $d$.\\
+
+\noindent
+SVM = Optimal Margin Classifier + Kernel Tricks (Map the data points to a higher dimension, then seperate by using linear hyperplane)
+
+\subsubsection{How to Make Kernels?}
+Basic idea: if $x$, $z$ are similar, $K(x,z)={\phi(x)}^T\phi(z)$ is large. Vice versa.\\
+Gaussian Kernel: $K(x,z) = {\rm exp} (-\frac{{\Vert x-z \Vert}^2}{{2\sigma}^2})$\\
+
+\noindent
+Theorem(Mercer): $K$ is a valid kernel function (i.e. $\exists\ \phi$ s.t. $K(x,z)={\phi(x)}^T\phi(z)$) $\iff$ for any $d$ points ($x^1 ... x^d$), the corresponding kernel matrix $K \geq 0$.\\
+
+\noindent
+Linear Kernel: $K(x,z) = x^Tz$, $\phi(x) = x$\\
+Gaussian Kernel: $K(x,z) = {\rm exp} (-\frac{{\Vert x-z \Vert}^2}{{2\sigma}^2})$, $\phi(x) \in \mathbb{R}^\infty$\\
+
+\noindent
+Note: a lot of algorithms can marry with the kernel tricks to reduce the amounts of computation.
+
+\subsection{L1-norm Soft Margin SVM}
+$\min\limits_{W,b,\xi_i} \frac{1}{2}{\Vert W \Vert}^2+ C\sum\limits_{i=1}^m\xi_i$ s.t. $y^i(W^Tx^i+b) \geq 1-\xi_i$ ($i=1,...,m;\ \xi_i \geq 0$)\\
+Note: more robust to outliers.\\
+
+\noindent
+Dual Optimization Form: \\
+$\max_\alpha W(\alpha) = \sum\limits_{i=1}^m\alpha_i - \frac{1}{2}\sum\limits_{i,j=1}^my^iy^j\alpha_i\alpha_j\left< x^i,x^j \right>$\\
+s.t. $0 \leq \alpha_i \leq C$ ($i = 1, ..., m$), $\sum\limits_{i=1}^m\alpha_iy^i=0$
+
+\subsection{SVM Kernels}
+$K(x,z) = (x^Tz)^d = {\rm exp}(-\frac{{\Vert x-z \Vert}^2}{2\delta^2})$
+\subsubsection{Protean Sequence Classifier}
+Protean Sequence: $BAJTSJAIBAJT...$\\
+Protean Codebook: AAAA, AAAB, AAAC, ..., ZZZZ ($20^=1600004$)\\
+$\phi(x)=\begin{bmatrix}
+  0\\
+  0\\
+  2\\
+  0\\
+  ...\\
+  4\\
+  ...\\
+  0\\
+  \end{bmatrix}$\\
+$\phi(x)^T\phi(z)=K(x,z)$
+
 \end{document}
