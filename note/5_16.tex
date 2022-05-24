@@ -627,7 +627,7 @@ s.t. $0 \leq \alpha_i \leq C$ ($i = 1, ..., m$), $\sum\limits_{i=1}^m\alpha_iy^i
 $K(x,z) = (x^Tz)^d = {\rm exp}(-\frac{{\Vert x-z \Vert}^2}{2\delta^2})$
 \subsubsection{Protean Sequence Classifier}
 Protean Sequence: $BAJTSJAIBAJT...$\\
-Protean Codebook: AAAA, AAAB, AAAC, ..., ZZZZ ($20^=1600004$)\\
+Protean Codebook: AAAA, AAAB, AAAC, ..., ZZZZ ($20^4=160000$)\\
 $\phi(x)=\begin{bmatrix}
   0\\
   0\\
@@ -640,4 +640,100 @@ $\phi(x)=\begin{bmatrix}
   \end{bmatrix}$\\
 $\phi(x)^T\phi(z)=K(x,z)$
 
+\section{Lecture 8}
+\subsection{Bias and Variance}
+Underfitting problem: high bias.\\
+Overfitting problem: high variance.
+\begin{figure}[H]
+	\centerline{
+   \includegraphics[width=0.6\textwidth]{Fig6.png}}
+   \caption{Bias and Variance.}
+   \label{fig:example}
+\end{figure}
+
+\subsection{Regularization}
+Regularzation for linear regression: $\min\limits_\theta \frac{1}{2} \sum\limits_{i=1}^m {\Vert y^i-\theta^Tx^i \Vert}^2 + \frac{\lambda}{2}{\Vert \theta \Vert}^2$\\
+When $\lambda$ is too big -- underfitting, whereas $\lambda$ is too small -- overfitting\\
+
+\noindent
+Regularization for logistic regression: $\mathop{\arg\max}\limits_{\theta} \sum\limits_{i=1}^m\log{p(y^i|x^i;\theta)} - \lambda{\Vert \theta \Vert}^2$\\
+
+\noindent
+Support Vector Machine (SVM): $\min\limits_{W,b} {\Vert W \Vert}^2$, since $W$ is $\theta_1 ... \theta_n$, the loss function already involves the regularization idea.\\
+
+\noindent
+From another perspective: $S:\ \{(x^i,y^i)\}_{i=1}^m$\\
+$p(\theta|S) = \frac{p(S|\theta)p(\theta)}{p(S)}$\\
+$\mathop{\arg\max}\limits_{\theta} p(\theta|S) = \mathop{\arg\max}\limits_{\theta} p(S|\theta)p(\theta)$\\
+= $\mathop{\arg\max}\limits_{\theta} (\prod\limits_{i=1}^mp(y^i|x^i,\theta))p(\theta)$\\
+Assume $\theta\ \sim\ N(0, \tau^2I)$, $p(\theta) = \frac{1}{\tau\sqrt{2 \pi I}}{\rm exp}(-\frac{\theta^2}{2\tau^2I})$\\
+After $\log{}$ the MLE, we will obtain ${\Vert \theta \Vert}^2$ term which is the regularization term.\\
+
+\noindent
+Frequentist: $\mathop{\arg\max}\limits_{\theta}p(S|\theta)$ -- MLE (estimate the parameters)\\
+Bayesian: $theta$ is unknown, prior distribution $p(\theta)$, $\mathop{\arg\max}\limits_{\theta}p(\theta|S)$ -- MAP (maximum a posterior)
+
+\subsection{Data Split}
+Train/dev/test sets\\
+Choose the form of polynomial, $\lambda$, $\tau$, $C$
+
+\subsubsection{Hold-out Cross Validation (large dataset)}
+$S$ $\rightarrow$ $S_{train}$, $S_{dev}$, $S_{test}$ (dev: development)\\
+(1) Train each model (options for design of polynomial) on $S_{train}$, and get some hypothesis $h$.\\
+(2) Mesaure error on $S_{dev}$, pick model w.r.t lowest error on $S_{dev}$.\\
+(3) Measure error on $S_{test}$ and report.
+
+\subsubsection{k-fold Cross Validation (small dataset)}
+$m = 100$, $S = \{(x^i,y^i)\}$ ($i=1,...,m$)\\
+$k = 10$ is typical, $k = 5$ for illustration (Divide the dataset into 5 pieces).\\
+\begin{algorithm}[h]
+  \caption{k-fold CV}
+\label{alg::conjugateGradient}
+\begin{algorithmic}[1]
+  \For {$d = 1$ to $5$}
+    \For {$i = 1$ to $k$}
+        \State train (fit parameters) on $k-1$ pieces and test on the training one piece;
+    \EndFor
+    \State average;
+  \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+\noindent
+$k$-fold Cross Validation makes more efficient use of data, whereas it is computationally very expensive.
+
+\subsection{Feature Selection}
+\begin{algorithm}[h]
+  \caption{Feature Selection}
+\label{alg::conjugateGradient}
+\begin{algorithmic}[1]
+\State Start with $\mathbb{F} = \phi$;
+\For {$i$ in feature bags}
+  \State Try adding each feature $i$ to $\mathbb{F}$, and see which single feature addition most improves the $S_{dev}$ performance;
+  \State Add the feature to $\mathbb{F}$;
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+\noindent
+Illustration:\\
+$x_1, ..., x_5$\\
+(1) $\phi$: empty set of features, $h(x) = \theta_0$\\
+(2) $\begin{bmatrix}
+  \phi + x_1\\
+  \phi + x_2\\
+  ...\\
+  \phi + x_5\\
+  \end{bmatrix}$ $\begin{bmatrix}
+    h_\theta(x) = \theta_0 + \theta_1x_1\\
+    h_\theta(x) = \theta_0 + \theta_1x_2\\
+    ...\\
+    h_\theta(x) = \theta_0 + \theta_1x_5\\
+    \end{bmatrix}$, $x_2$ achieves the best performance, $\mathbb{F} = \{x_2\}$.\\
+(3) $\begin{bmatrix}
+  x_2 + x_1\\
+  x_2 + x_3\\
+  x_2 + x_4\\
+  x_2 + x_5\\
+  \end{bmatrix}$, $\mathbb{F} = \{x_2, x_4\}$\\
+...\\
 \end{document}
